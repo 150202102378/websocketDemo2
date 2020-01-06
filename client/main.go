@@ -50,6 +50,7 @@ func connect(i int) {
 	conn, _, err := dialer.Dial(u.String(), nil)
 	if err != nil {
 		fmt.Println(err)
+		go connect(i)
 		return
 	}
 	defer func() {
