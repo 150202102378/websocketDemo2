@@ -22,8 +22,8 @@ var (
 
 func init() {
 	config := conf.GetConfig()
-	host = config.ServerIP + ":" + config.ReactPort1
-	//host = config.ServerIP + ":8081"
+	//host = config.ServerIP + ":" + config.ReactPort1
+	host = config.ServerIP + ":8081"
 	addr = flag.String("addr1", host, "https service address")
 	record = make(chan *dao.Record)
 	dialer = &websocket.Dialer{HandshakeTimeout: 10000 * time.Hour}
