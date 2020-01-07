@@ -93,7 +93,7 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go RecordMessage()
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 10000; i++ {
 		time.Sleep(5 * time.Millisecond)
 		go connect(i)
 	}
