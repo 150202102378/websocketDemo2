@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 ENV PATH=$PATH:/usr/local/go/bin
 ENV GOPATH=/home/demo
 RUN apt-get update

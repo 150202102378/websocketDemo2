@@ -22,11 +22,10 @@ var (
 
 func init() {
 	config := conf.GetConfig()
-	//host = config.ServerIP + ":" + config.ReactPort1
-	host = config.ServerIP + ":8081"
+	host = config.ServerIP + ":" + config.ReactPort1
+	//host = config.ServerIP + ":8081"
 	addr = flag.String("addr1", host, "https service address")
 	record = make(chan *dao.Record)
-	dialer = &websocket.Dialer{HandshakeTimeout: 10000 * time.Hour}
 }
 
 func RecordMessage() {
@@ -47,27 +46,39 @@ func connect(i int) {
 	}
 	u.Host = *addr
 
-	conn, _, err := dialer.Dial(u.String(), nil)
+	conn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
 		fmt.Println(err)
 		go connect(i)
 		return
 	}
 	defer func() {
+		//go connect(i)
 		conn.WriteMessage(websocket.CloseMessage, []byte{})
 		conn.Close()
 	}()
 	//从服务器读取信息
+	//conn.SetPingHandler(nil)
+	//conn.SetReadDeadline(time.Now().Add(13 * time.Second))
+	conn.SetPingHandler(func(string) error {
+		conn.WriteControl(websocket.PongMessage, []byte{}, time.Now().Add(2*time.Second))
+		//conn.SetReadDeadline(time.Now().Add(13 * time.Second))
+		return nil
+	})
 
 	for {
 		re := dao.Record{}
 		//调用ReadMessage(),一旦服务器主动断开连接则会接收到 err = websocket: close 1006 (abnormal closure): unexpected EOF
+
 		_, message, err := conn.ReadMessage()
 		if err != nil {
 			/* re.Message = string(message)
 			re.Flag = 0
 			record <- &re
 			fmt.Println("read:", err, frameType) */
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
+				fmt.Println("error: ", err)
+			}
 			return
 		}
 		re.Message = string(message)
@@ -82,8 +93,8 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go RecordMessage()
-	for i := 0; i < 30000; i++ {
-		time.Sleep(10 * time.Millisecond)
+	for i := 0; i < 1000; i++ {
+		time.Sleep(5 * time.Millisecond)
 		go connect(i)
 	}
 	wg.Wait()

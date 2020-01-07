@@ -11,7 +11,7 @@ type ChannelManager struct {
 
 func init() {
 	channelManager = &ChannelManager{}
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 1; i++ {
 		channelManager.channels = append(channelManager.channels, Channel{
 			clients:      make(map[*Client]bool),
 			broadcastMsg: make(chan []byte),
@@ -31,7 +31,7 @@ func (cm *ChannelManager) GetChannel(channelNum int) *Channel {
 }
 
 func (cm *ChannelManager) Start() {
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 1; i++ {
 		go cm.channels[i].Start()
 	}
 }

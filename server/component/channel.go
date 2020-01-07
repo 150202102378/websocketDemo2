@@ -8,20 +8,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-const (
-	// Time allowed to write the file to the client.
-	writeWait = 5 * time.Second
-
-	// Time allowed to read the next pong message from the client.
-	pongWait = 15 * time.Second
-
-	// Send pings to client with this period. Must be less than pongWait.
-	pingPeriod = (pongWait * 9) / 10
-
-	// Poll file for changes with this period.
-	filePeriod = 10 * time.Second
-)
-
 //Channel 订阅频道
 type Channel struct {
 	clients      map[*Client]bool
@@ -59,7 +45,7 @@ func (channel *Channel) Start() {
 			//锁操作
 			channel.lock.Lock()
 			channel.clients[conn] = true
-			conn.Socket.SetPongHandler(func(string) error { return nil })
+			//conn.Socket.SetPongHandler(func(string) error { return nil })
 			fmt.Println(len(channel.clients))
 			//解锁
 			channel.lock.Unlock()
@@ -79,7 +65,6 @@ func (channel *Channel) Start() {
 
 		case message := <-channel.broadcastMsg: //广播
 			for conn := range channel.clients {
-				//设置SetWriteDeadline需要每次刷新一遍(不然push几遍后会断开连接？？？？？)，具体原理还没搞懂
 				if err := conn.Socket.WriteMessage(websocket.TextMessage, message); err != nil {
 					fmt.Println(err)
 					//需要先发送关闭信息再关闭conn
@@ -88,10 +73,12 @@ func (channel *Channel) Start() {
 					go func() { channel.unregister <- conn }()
 				}
 			}
+
 		case <-pingTicker.C:
+			fmt.Println("send ping!")
 			//发送 ping
-			//客户端貌似在upgrade的时候实现了处理ping的函数，不需要自己去写
 			for conn := range channel.clients {
+				//conn.Socket.SetWriteDeadline(time.Now().Add(writeWait))
 				if err := conn.Socket.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
 					//需要先发送关闭信息再关闭conn
 					conn.Socket.WriteMessage(websocket.CloseMessage, []byte{})

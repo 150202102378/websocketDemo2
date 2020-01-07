@@ -9,18 +9,18 @@ POSTGRESPORT = `cat ${CONFIGPATH} | grep 'postgresPort' | sed -e 's/\(.*\)\"\(.*
 #webSocketDemo2
 build:
 	docker build -t websocket:server -f ./server/Dockerfile .
-	docker pull postgres:11.3
-	docker build -t websocket:jmeter -f ./apache-jmeter-5.2.1/Dockerfile .
+	#docker pull postgres:11.3
+	#docker build -t websocket:jmeter -f ./apache-jmeter-5.2.1/Dockerfile .
 
 pack:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  -o ./server/server ./server/main.go
-	go build  -o ./server/server ./server/main.go
+	#go build  -o ./server/server ./server/main.go
 	#go build -o ./client/client ./client/main.go 
 
 run:
-	docker run -it -d --name=postgres -p ${POSTGRESPORT}:5432 postgres:11.3
+	#docker run -it -d --name=postgres -p ${POSTGRESPORT}:5432 postgres:11.3
 	#docker run -it -d --name=server -p ${REACTPORT}:${LISTENPORT}  websocket:server
-	#docker run -it -d --name=server -p ${REACTPORT1}:${LISTENPORT1} -p ${REACTPORT2}:${LISTENPORT2} websocket:server
+	docker run -it -d --name=server -p ${REACTPORT1}:${LISTENPORT1} -p ${REACTPORT2}:${LISTENPORT2} websocket:server
 	
 test:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./client/client ./client/main.go 
@@ -42,8 +42,8 @@ test:
 all:
 	#docker rm -f `docker ps -a | grep 'client' | awk '{print $1}'`
 	#docker rm -f `docker ps -a | grep 'server' | awk '{print $1}'`
-	#make pack
-	#make build
+	make pack
+	make build
 	make run
 	#删除无用镜像
 	#docker rmi -f  `docker images | grep '<none>' | awk '{print $3}'`

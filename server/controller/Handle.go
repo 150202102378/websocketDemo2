@@ -50,6 +50,7 @@ func RegisterHandle(res http.ResponseWriter, req *http.Request) {
 	}
 	//注册订阅
 	channel.Register(client)
+	//设置读取pong超时处理机制
 	go client.Read()
 }
 
