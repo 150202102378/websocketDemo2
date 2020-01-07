@@ -53,7 +53,7 @@ func connect(i int) {
 		return
 	}
 	defer func() {
-		//go connect(i)
+		go connect(i)
 		conn.WriteMessage(websocket.CloseMessage, []byte{})
 		conn.Close()
 	}()
