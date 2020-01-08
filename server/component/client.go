@@ -12,10 +12,10 @@ const (
 	writeWait = 5 * time.Second
 
 	// Time allowed to read the next pong message from the client.
-	pongWait = 60 * time.Second
+	pongWait = 200 * time.Second
 
 	// Send pings to client with this period. Must be less than pongWait.
-	pingPeriod = (9 * pongWait) / 10
+	pingPeriod = (5 * pongWait) / 10
 
 	// Poll file for changes with this period.
 	filePeriod = 10 * time.Second

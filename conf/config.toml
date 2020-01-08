@@ -2,10 +2,9 @@ listenPort1 = "8081"
 listenPort2 = "8082"
 reactPort1 = "32777"
 reactPort2 = "32778"
-
-serverIP = "192.168.1.45"
 postgresPort = "55555" 
 
+serverIP = "192.168.1.45"
 connNum = 1000
 
 [psql]
