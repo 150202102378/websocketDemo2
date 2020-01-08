@@ -14,16 +14,18 @@ import (
 )
 
 var (
-	host   string
-	addr   *string
-	dialer *websocket.Dialer
-	record chan *dao.Record
+	host    string
+	addr    *string
+	dialer  *websocket.Dialer
+	record  chan *dao.Record
+	connNum int
 )
 
 func init() {
 	config := conf.GetConfig()
-	host = config.ServerIP + ":" + config.ReactPort1
-	//host = config.ServerIP + ":8081"
+	connNum = config.ConnNum
+	//host = config.ServerIP + ":" + config.ReactPort1
+	host = config.ServerIP + ":8081"
 	addr = flag.String("addr1", host, "https service address")
 	record = make(chan *dao.Record)
 }
@@ -48,7 +50,7 @@ func connect(i int) {
 
 	conn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Dial error", err)
 		go connect(i)
 		return
 	}
@@ -61,7 +63,7 @@ func connect(i int) {
 	//conn.SetPingHandler(nil)
 	//conn.SetReadDeadline(time.Now().Add(13 * time.Second))
 	conn.SetPingHandler(func(string) error {
-		conn.WriteControl(websocket.PongMessage, []byte{}, time.Now().Add(2*time.Second))
+		conn.WriteMessage(websocket.PongMessage, []byte{})
 		//conn.SetReadDeadline(time.Now().Add(13 * time.Second))
 		return nil
 	})
@@ -93,7 +95,7 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go RecordMessage()
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < connNum; i++ {
 		time.Sleep(5 * time.Millisecond)
 		go connect(i)
 	}

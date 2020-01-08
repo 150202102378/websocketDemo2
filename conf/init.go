@@ -25,6 +25,7 @@ type Config struct {
 	ReactPort1  string
 	ReactPort2  string
 	ServerIP    string
+	ConnNum     int
 	Psql        PsqlStruct
 }
 type PsqlStruct struct {

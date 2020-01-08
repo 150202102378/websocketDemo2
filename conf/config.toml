@@ -6,6 +6,8 @@ reactPort2 = "32778"
 serverIP = "192.168.1.45"
 postgresPort = "55555" 
 
+connNum = 1000
+
 [psql]
     host = "192.168.1.45"
     port = "55555"
