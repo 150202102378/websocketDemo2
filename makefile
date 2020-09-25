@@ -9,19 +9,18 @@ POSTGRESPORT = `cat ${CONFIGPATH} | grep 'postgresPort' | sed -e 's/\(.*\)\"\(.*
 
 #webSocketDemo2
 build:
-	#docker build -t websocket:server -f ./server/Dockerfile .
-	#docker pull postgres:11.3
-	#docker build -t websocket:jmeter -f ./apache-jmeter-5.2.1/Dockerfile .
+	docker build -t websocket:server -f ./server/Dockerfile .
+	docker pull postgres:11.3
 
 pack:
-	#CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  -o ./server/server ./server/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  -o ./server/server ./server/main.go
 	#go build  -o ./server/server ./server/main.go
 	#go build -o ./client/client ./client/main.go 
 
 run:
 	docker run -it -d --name=postgres -p ${POSTGRESPORT}:5432 postgres:11.3
 	#docker run -it -d --name=server -p ${REACTPORT}:${LISTENPORT}  websocket:server
-	#docker run -it -d --name=server -p ${REACTPORT1}:${LISTENPORT1} -p ${REACTPORT2}:${LISTENPORT2} websocket:server
+	docker run -it -d --name=server -p ${REACTPORT1}:${LISTENPORT1} -p ${REACTPORT2}:${LISTENPORT2} websocket:server
 	
 test:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./client/client ./client/main.go 
@@ -31,14 +30,6 @@ test:
 	#docker run -it -d --name=client3 websocket:client ./client
 	#docker run -it -d --name=client4 websocket:client ./client
 	#docker run -it -d --name=client5 websocket:client ./client
-	#docker run -it -d -m 3G --name=jmeter1 websocket:jmeter 
-	#docker run -it -d --name=jmeter1 websocket:jmeter ./bin/jmeter -n -t processGroup.jmx -l log.jtl
-	#docker run -it -d --name=jmeter2 websocket:jmeter ./bin/jmeter -n -t processGroup.jmx -l log.jtl
-	#docker run -it -d --name=jmeter3 websocket:jmeter ./bin/jmeter -n -t processGroup.jmx -l log.jtl
-	#docker run -it -d --name=jmeter4 websocket:jmeter ./bin/jmeter -n -t processGroup.jmx -l log.jtl
-	#docker run -it -d --name=jmeter5 websocket:jmeter ./bin/jmeter -n -t processGroup.jmx -l log.jtl
-	#docker run -it -d --name=jmeter6 websocket:jmeter ./bin/jmeter -n -t processGroup.jmx -l log.jtl
-	#docker run -it -d --name=jmeter7 websocket:jmeter ./bin/jmeter -n -t processGroup.jmx -l log.jtl
 
 all:
 	#docker rm -f `docker ps -a | grep 'client' | awk '{print $1}'`

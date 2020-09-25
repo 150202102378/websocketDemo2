@@ -34,6 +34,7 @@ func RecordMessage() {
 	for {
 		select {
 		case rec := <-record:
+			fmt.Printf("%+v\n", rec)
 			dao.RecordMessage(rec)
 		}
 	}

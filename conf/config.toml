@@ -4,11 +4,11 @@ reactPort1 = "32777"
 reactPort2 = "32778"
 postgresPort = "55555" 
 
-serverIP = "192.168.1.45"
+serverIP = "192.168.1.198"
 connNum = 1000
 
 [psql]
-    host = "192.168.1.45"
+    host = "192.168.1.198"
     port = "55555"
     db = "postgres"
     user = "postgres"
